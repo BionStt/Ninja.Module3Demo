@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication", "ConsoleApplication\ConsoleApplication.csproj", "{64D8763A-4F76-4501-B4AE-157FBB7D3E29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaDomain.Classes", "NinjaDomain.Classes\NinjaDomain.Classes.csproj", "{C0758412-B220-49A9-A5F4-6707C4BF6A41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaDomain.DataModel", "NinjaDomain.DataModel\NinjaDomain.DataModel.csproj", "{2BD93190-23CD-448D-B110-747F28C188BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{64D8763A-4F76-4501-B4AE-157FBB7D3E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64D8763A-4F76-4501-B4AE-157FBB7D3E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64D8763A-4F76-4501-B4AE-157FBB7D3E29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0758412-B220-49A9-A5F4-6707C4BF6A41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0758412-B220-49A9-A5F4-6707C4BF6A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0758412-B220-49A9-A5F4-6707C4BF6A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0758412-B220-49A9-A5F4-6707C4BF6A41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD93190-23CD-448D-B110-747F28C188BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD93190-23CD-448D-B110-747F28C188BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD93190-23CD-448D-B110-747F28C188BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD93190-23CD-448D-B110-747F28C188BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
