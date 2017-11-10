@@ -30,7 +30,7 @@ namespace ConsoleApplication
 
         private static void InsertNinja()
         {
-            ////First insert
+            ////First insert example
             //var ninja = new Ninja()
             //{
             //    Name = "JulieSan",
@@ -39,16 +39,28 @@ namespace ConsoleApplication
             //    ClanId = 1
             //};
 
-            ////Second Insert
-            //var ninja = new Ninja()
-            //{
-            //    Name = "SampsonSan",
-            //    ServedInOniwaban = false,
-            //    DateOfBirth = new DateTime(2008, 1, 28),
-            //    ClanId = 1
-            //};
+            //Second Insert example
+            var ninja = new Ninja()
+            {
+                Name = "SampsonSan",
+                ServedInOniwaban = false,
+                DateOfBirth = new DateTime(2008, 1, 28),
+                ClanId = 1
+            };
 
-            //Third insert
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+
+                //Single Ninja insert used for first and second inserts
+                context.Ninjas.Add(ninja);
+                context.SaveChanges();
+            }
+        }
+
+        private static void InsertMultipleNinjas()
+        {          
+            //Third insert example
             var ninja1 = new Ninja()
             {
                 Name = "Leonardo",
@@ -68,16 +80,15 @@ namespace ConsoleApplication
             {
                 context.Database.Log = Console.WriteLine;
 
-                ////Single Ninja insert used for first and second inserts
-                //context.Ninjas.Add(ninja);
-
                 //Multiple Ninjas insert used for third insert. 
-                //EF opens connection and performs a distinct insert for each Ninja, before committing and closing it.
+                //EF opens connection, starts a transaction and performs a distinct insert for each Ninja, 
+                //before committing the transaction and closing the connection.
                 //1 SQL insert is run for each Ninja, will rollback all if even one fails.
                 context.Ninjas.AddRange(new List<Ninja> { ninja1, ninja2 });
 
                 context.SaveChanges();
             }
         }
+
     }
 }
