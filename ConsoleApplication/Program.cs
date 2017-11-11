@@ -19,11 +19,13 @@ namespace ConsoleApplication
             Database.SetInitializer(new NullDatabaseInitializer<NinjaContext>());//stop EF from performing DB initialization process.
             //InsertNinja();
             //InsertMultipleNinjas();
-            //InsertNinjaWithEquipment();
+            //InsertNinjaWithEquipment(); //not used
             //SimpleNinjaQueries();
-            //SimpleNinjaGraphQuery();
+            //SimpleNinjaGraphQuery(); //not used
             //QueryAndUpdateNinja();
-            QueryAndUpdateNinjaDisconnected();
+            //QueryAndUpdateNinjaDisconnected();
+            //RetrieveDataWithFind();
+            RetrieveDataWithStoredProc();
             //DeleteNinja;
             Console.ReadKey();
         }
@@ -169,9 +171,38 @@ namespace ConsoleApplication
                 context.Ninjas.Attach(ninja); //Gets EF to WATCH ninja, but sees it as a new Ninja by default.
                 context.Entry(ninja).State = EntityState.Modified; //Makes the Context realize that ninja should ne Updated.
                 context.SaveChanges(); //SQL updates all fields because changes were mad outside of the Context. While EF was told ninja was modified, it doesn't know what was modified.
-                //This behavior is not elegant, and there are workarounds.
+                //This behavior when working with disconnected objects is not elegant, and there are workarounds.
             }
 
+        }
+
+        private static void RetrieveDataWithFind()
+        {
+            var keyVal = 4;
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+
+                var ninja = context.Ninjas.Find(keyVal); //Find() retrieves an object with a SQL query using a Key Value. Fails if there are multiple matches.
+                Console.WriteLine($"After Find#1: {ninja.Name}");
+
+                var someNinja = context.Ninjas.Find(keyVal); //Find() won't requery the database if the object already exists in the Context. Uses the object that is already retieved to memory.
+                Console.WriteLine($"After Find#2: {someNinja.Name}");
+                ninja = null;
+            }
+        }
+
+        private static void RetrieveDataWithStoredProc()
+        {
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                var ninjas = context.Ninjas.SqlQuery("exec GetOldNinjas"); //Proc won't actually execute until iteration.
+                foreach (var ninja in ninjas)
+                {
+                    Console.WriteLine(ninja.Name);
+                }
+            }
         }
 
     }
