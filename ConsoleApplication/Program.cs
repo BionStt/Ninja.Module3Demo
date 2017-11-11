@@ -20,10 +20,10 @@ namespace ConsoleApplication
             //InsertNinja();
             //InsertMultipleNinjas();
             //InsertNinjaWithEquipment();
-            SimpleNinjaQueries();
+            //SimpleNinjaQueries();
             //SimpleNinjaGraphQuery();
             //QueryAndUpdateNinja();
-            //QueryAndUpdateNinjaDisconnected();
+            QueryAndUpdateNinjaDisconnected();
             //DeleteNinja;
             Console.ReadKey();
         }
@@ -134,6 +134,44 @@ namespace ConsoleApplication
                     .FirstOrDefault(); //FirstOrDefault<> will return a single Ninja item, rather than a List<Ninja> containing one Ninja.
                 Console.WriteLine(ninja.Name);
             }
+        }
+
+        private static void QueryAndUpdateNinja()
+        {
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                var ninja = context.Ninjas.FirstOrDefault();
+                ninja.ServedInOniwaban = (!ninja.ServedInOniwaban);
+                context.SaveChanges(); //SQL only updates the field that was changed.
+            }
+        }
+
+        private static void QueryAndUpdateNinjaDisconnected()
+        {
+            Ninja ninja;
+
+            //Code block represents API returning a Ninja to the Client.
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                ninja = context.Ninjas.FirstOrDefault();
+            }
+
+            //Statement represents client modifying the Ninja.
+            ninja.ServedInOniwaban = (!ninja.ServedInOniwaban);
+
+            //Code block uses a new context instance to update the Ninja.
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                //context.Ninjas.Add(ninja); //Nope: this would insert a new record, ignoring and overwriting the Id.
+                context.Ninjas.Attach(ninja); //Gets EF to WATCH ninja, but sees it as a new Ninja by default.
+                context.Entry(ninja).State = EntityState.Modified; //Makes the Context realize that ninja should ne Updated.
+                context.SaveChanges(); //SQL updates all fields because changes were mad outside of the Context. While EF was told ninja was modified, it doesn't know what was modified.
+                //This behavior is not elegant, and there are workarounds.
+            }
+
         }
 
     }
