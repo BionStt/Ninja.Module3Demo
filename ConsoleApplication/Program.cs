@@ -25,8 +25,10 @@ namespace ConsoleApplication
             //QueryAndUpdateNinja();
             //QueryAndUpdateNinjaDisconnected();
             //RetrieveDataWithFind();
-            RetrieveDataWithStoredProc();
-            //DeleteNinja;
+            //RetrieveDataWithStoredProc();
+            //DeleteNinja();
+            //DeleteNinjaWithKeyValue();
+            DeleteNinjaWithStoredProcedure();
             Console.ReadKey();
         }
 
@@ -202,6 +204,71 @@ namespace ConsoleApplication
                 {
                     Console.WriteLine(ninja.Name);
                 }
+            }
+        }
+
+        private static void DeleteNinja()
+        {
+            ////All in one block for a simple detete.
+            //using (var context = new NinjaContext())
+            //{
+            //    context.Database.Log = Console.WriteLine;
+            //    var ninja = context.Ninjas.FirstOrDefault();
+            //    context.Ninjas.Remove(ninja);
+            //    context.SaveChanges(); //SQL deletes using key value of ninja.
+            //}
+
+            ////For more complex apps, you'll want to close the context in between retrieving and deleting.
+            //Ninja ninja;
+            //using (var context = new NinjaContext()) //First context is used for retieval only.
+            //{
+            //    context.Database.Log = Console.WriteLine;
+            //    ninja = context.Ninjas.FirstOrDefault();                
+            //}
+            ////Perform additional operations here.
+            //using (var context = new NinjaContext()) //Second context is used to delete only.
+            //{
+            //    context.Database.Log = Console.WriteLine;
+            //    context.Ninjas.Attach(ninja); //Need to attach ninja to the context because this is a new context.
+            //    context.Ninjas.Remove(ninja);
+            //    context.SaveChanges(); //SQL deletes using key value of ninja.
+            //}
+
+            //Attaching to remove is wierd, so the folowing way is preferred over the previous.
+            Ninja ninja;
+            using (var context = new NinjaContext()) //First context is used for retieval only.
+            {
+                context.Database.Log = Console.WriteLine;
+                ninja = context.Ninjas.FirstOrDefault();
+            }
+            //Perform additional operations here.
+            using (var context = new NinjaContext()) //Second context is used to delete only.
+            {
+                context.Database.Log = Console.WriteLine;
+                context.Entry(ninja).State = EntityState.Deleted; //Mark ninja record for deletion in the new context.
+                context.SaveChanges(); //SQL deletes using key value of ninja.
+            }
+        }
+
+        private static void DeleteNinjaWithKeyValue() //If you have the object key you can use it directly, but this way takes 2 round trips to the DB.
+        {
+            var keyVal = 1;
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                var ninja = context.Ninjas.Find(keyVal); //round trip 1
+                context.Ninjas.Remove(ninja);
+                context.SaveChanges(); //round trip 2
+            }
+        }
+
+        private static void DeleteNinjaWithStoredProcedure() //Using the object key and a stored proc only needs one trip to the db.
+        {
+            var keyVal = 3;
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                context.Database.ExecuteSqlCommand($"exec DeleteNinjaViaId {keyVal}"); //can pass multiple parameters by puttin spaces in between them.
             }
         }
 
