@@ -21,7 +21,8 @@ namespace ConsoleApplication
             //InsertMultipleNinjas();
             //InsertNinjaWithEquipment();
             //SimpleNinjaQueries();
-            SimpleNinjaGraphQuery();
+            //SimpleNinjaGraphQuery();
+            ProjectionQuery();
             //QueryAndUpdateNinja();
             //QueryAndUpdateNinjaDisconnected();
             //RetrieveDataWithFind();
@@ -322,6 +323,18 @@ namespace ConsoleApplication
                 //Console.WriteLine($"Ninja equipment count: {ninja.EquipmentOwned.Count()}"); //round trip 2
                 ////Warning: while lazy loading fetches property data only as needed, it will need to perform a seperate query for each parent object record. 
                 ////This can be very slow for a data grids, etc.
+            }
+        }
+
+        private static void ProjectionQuery()
+        {
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+                //Projection query with Select method using anonymous types.
+                var ninjas = context.Ninjas
+                    .Select(n => new { n.Name, n.DateOfBirth, n.EquipmentOwned })
+                    .ToList();
             }
         }
 
