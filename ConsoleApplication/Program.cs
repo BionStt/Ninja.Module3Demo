@@ -19,9 +19,9 @@ namespace ConsoleApplication
             Database.SetInitializer(new NullDatabaseInitializer<NinjaContext>());//stop EF from performing DB initialization process.
             //InsertNinja();
             //InsertMultipleNinjas();
-            InsertNinjaWithEquipment();
+            //InsertNinjaWithEquipment();
             //SimpleNinjaQueries();
-            //SimpleNinjaGraphQuery(); //not used
+            SimpleNinjaGraphQuery();
             //QueryAndUpdateNinja();
             //QueryAndUpdateNinjaDisconnected();
             //RetrieveDataWithFind();
@@ -299,6 +299,29 @@ namespace ConsoleApplication
                 ninja.EquipmentOwned.Add(muscles);
                 ninja.EquipmentOwned.Add(spunk);
                 context.SaveChanges();
+            }
+        }
+
+        private static void SimpleNinjaGraphQuery()
+        {
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+
+                //Eager Loading example using Include method. Gets all the equipment right away.
+                var ninja = context.Ninjas.Include(n => n.EquipmentOwned).FirstOrDefault(n => n.Name.StartsWith("Kacy"));
+
+                ////Explicit Loading example using the collection method.
+                //var ninja = context.Ninjas.FirstOrDefault(n => n.Name.StartsWith("Kacy")); //round trip 1
+                //Console.WriteLine($"Ninja retrieved: {ninja.Name}");
+                //context.Entry(ninja).Collection(n => n.EquipmentOwned).Load(); //round trip 2
+
+                ////Lazy Loading example. Only works for properties that are virtual. This returns a count of 0 if EquipmentOwned is not virtual.
+                //var ninja = context.Ninjas.FirstOrDefault(n => n.Name.StartsWith("Kacy")); //round trip 1
+                //Console.WriteLine($"Ninja retrieved: {ninja.Name}");
+                //Console.WriteLine($"Ninja equipment count: {ninja.EquipmentOwned.Count()}"); //round trip 2
+                ////Warning: while lazy loading fetches property data only as needed, it will need to perform a seperate query for each parent object record. 
+                ////This can be very slow for a data grids, etc.
             }
         }
 
