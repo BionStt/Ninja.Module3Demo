@@ -5,6 +5,13 @@ namespace NinjaDomain.Classes
 {
     public class Ninja
     {
+        public Ninja()
+        {
+            //Instantiate EquipmentOwned in the constructor, so we can always add equipment to it.
+            //Otherwise we get null expception errors when we try to add equipment without remembering to istantiate the List<> first.
+            EquipmentOwned = new List<NinjaEquipment>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public bool ServedInOniwaban { get; set; }
@@ -25,6 +32,13 @@ namespace NinjaDomain.Classes
 
     public class Clan
     {
+        public Clan()
+        {
+            //Instantiate Ninjas in the constructor, so we can always add ninjas to it.
+            //Otherwise we get null expception errors when we try to add ninjas without remembering to istantiate the List<> first.
+            Ninjas = new List<Ninja>();
+        }
+
         public int Id { get; set; }
         public string ClanName { get; set; }
         public List<Ninja> Ninjas { get; set; }

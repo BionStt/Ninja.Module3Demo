@@ -19,7 +19,7 @@ namespace ConsoleApplication
             Database.SetInitializer(new NullDatabaseInitializer<NinjaContext>());//stop EF from performing DB initialization process.
             //InsertNinja();
             //InsertMultipleNinjas();
-            //InsertNinjaWithEquipment(); //not used
+            InsertNinjaWithEquipment();
             //SimpleNinjaQueries();
             //SimpleNinjaGraphQuery(); //not used
             //QueryAndUpdateNinja();
@@ -28,7 +28,7 @@ namespace ConsoleApplication
             //RetrieveDataWithStoredProc();
             //DeleteNinja();
             //DeleteNinjaWithKeyValue();
-            DeleteNinjaWithStoredProcedure();
+            //DeleteNinjaWithStoredProcedure();
             Console.ReadKey();
         }
 
@@ -269,6 +269,36 @@ namespace ConsoleApplication
             {
                 context.Database.Log = Console.WriteLine;
                 context.Database.ExecuteSqlCommand($"exec DeleteNinjaViaId {keyVal}"); //can pass multiple parameters by puttin spaces in between them.
+            }
+        }
+
+        private static void InsertNinjaWithEquipment() //3 sql inserts all take place in the same connection and transaction.
+        {
+            using (var context = new NinjaContext())
+            {
+                context.Database.Log = Console.WriteLine;
+
+                var ninja = new Ninja
+                {
+                    Name = "Kacy Catanzaro",
+                    ServedInOniwaban = false,
+                    DateOfBirth = new DateTime(1990, 1, 14),
+                    ClanId = 1
+                };
+                var muscles = new NinjaEquipment
+                {
+                    Name = "Muscles",
+                    Type = EquipmentType.Tool,
+                };
+                var spunk = new NinjaEquipment
+                {
+                    Name = "Spunk",
+                    Type = EquipmentType.Weapon,
+                };
+                context.Ninjas.Add(ninja);
+                ninja.EquipmentOwned.Add(muscles);
+                ninja.EquipmentOwned.Add(spunk);
+                context.SaveChanges();
             }
         }
 
